@@ -2,18 +2,18 @@ fun main() {
 
     fun part1(input: String): Int {
         val bags = input.toBags()
-        val summedBags = bags.sum()
+        val summedBags = bags.deepSum()
         return summedBags.max()
     }
 
     fun part2(input: String): Int {
         val bags = input.toBags()
-        val summedBags = bags.sum()
+        val summedBags = bags.deepSum()
         val top3 = summedBags.sorted()
                 .reversed()
                 .take(3)
 
-        return top3.fold(0) { acc, cur -> acc + cur }
+        return top3.sum()
     }
 
     // test if implementation meets criteria from the description, like:
@@ -29,6 +29,6 @@ fun main() {
 }
 
 internal fun String.toBags() = split("\n\n")
-        .map { line -> line.split("\n") }
+        .map { line -> line.lines().map { it.toIntOrNull() ?: 0 } }
 
-internal fun List<List<String>>.sum() = map { bag -> bag.sumOf { string -> string.toIntOrNull() ?: 0 } }
+internal fun List<List<Int>>.deepSum() = map { bag -> bag.sum() }
