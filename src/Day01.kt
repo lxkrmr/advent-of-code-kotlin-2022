@@ -9,8 +9,7 @@ fun main() {
     fun part2(input: String): Int {
         val bags = input.toBags()
         val summedBags = bags.deepSum()
-        val top3 = summedBags.sorted()
-                .reversed()
+        val top3 = summedBags.sortedDescending()
                 .take(3)
 
         return top3.sum()
