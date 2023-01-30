@@ -1,17 +1,22 @@
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    fun part1(input: String): Int {
+        val bags = input
+                .split("\n\n")
+                .map { line -> line.split("\n") }
+        val summedBags = bags
+                .map { bag -> bag.sumOf { string -> string.toIntOrNull() ?: 0 } }
+        return summedBags.max()
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part2(input: String): Int {
+        return input.length
     }
 
     // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
+    val testInputPart1 = readInputAsText("Day01_test")
+    check(part1(testInputPart1) == 24_000)
 
-    val input = readInput("Day01")
+    val input = readInputAsText("Day01")
     part1(input).println()
     part2(input).println()
 }
