@@ -3,15 +3,14 @@ fun main() {
     fun part1(input: String): Int {
         val bags = input.toBags()
         val summedBags = bags.deepSum()
-        return summedBags.max()
+        val top1 = summedBags.topNBags(1)
+        return top1.sum()
     }
 
     fun part2(input: String): Int {
         val bags = input.toBags()
         val summedBags = bags.deepSum()
-        val top3 = summedBags.sortedDescending()
-                .take(3)
-
+        val top3 = summedBags.topNBags(3)
         return top3.sum()
     }
 
@@ -31,3 +30,6 @@ internal fun String.toBags() = split("\n\n")
         .map { line -> line.lines().map { it.toIntOrNull() ?: 0 } }
 
 internal fun List<List<Int>>.deepSum() = map { bag -> bag.sum() }
+
+fun List<Int>.topNBags(n: Int) = sortedDescending()
+        .take(n)
