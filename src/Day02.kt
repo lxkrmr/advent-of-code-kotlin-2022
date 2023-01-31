@@ -15,16 +15,41 @@ fun main() {
                 )
                 scoreForSelection + scoreForOutcomeOfTheRound
             }
-        }.fold(Score(
-            opponent = 0,
-            player = 0
-        )) { acc, cur -> acc + cur }
+        }.fold(
+            Score(
+                opponent = 0,
+                player = 0
+            )
+        ) { acc, cur -> acc + cur }
 
         return scores.player
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val scores = input.map { round ->
+            round.split(" ").let { (pickOpponent, expectedEndResult) ->
+                val opponent = pickOpponent.toRockPaperScissors()
+                val roundNeedsToEnd = expectedEndResult.toRoundNeedsToEnd()
+                val player = roundNeedsToEnd.pickRockPaperScissors(opponent)
+                val scoreForSelection = Score(
+                    opponent = opponent.toSelectionScore(),
+                    player = player.toSelectionScore()
+                )
+                val scoreForOutcomeOfTheRound = Score(
+                    opponent = opponent.vs(player),
+                    player = player.vs(opponent)
+                )
+                scoreForSelection + scoreForOutcomeOfTheRound
+            }
+        }.fold(
+            Score(
+                opponent = 0,
+                player = 0
+            )
+        ) { acc, cur -> acc + cur }
+
+        scores.println()
+        return scores.player
     }
 
     // test input
@@ -34,12 +59,32 @@ fun main() {
     check(part1(testInput) == 15)
 
     // test part 2: if implementation meets criteria from the description, like:
-    // check(part2(testInput) == 45_000)
+    check(part2(testInput) == 12)
 
     // use the given input and print the result
     val input = readInputAsLines("Day02")
     part1(input).println()
     part2(input).println()
+}
+
+private fun RoundNeedsToEnd.pickRockPaperScissors(opponent: RockPaperScissors): RockPaperScissors = when (this) {
+    RoundNeedsToEnd.LOSE -> {
+        when (opponent) {
+            RockPaperScissors.ROCK -> RockPaperScissors.SCISSORS
+            RockPaperScissors.PAPER -> RockPaperScissors.ROCK
+            RockPaperScissors.SCISSORS -> RockPaperScissors.PAPER
+        }
+    }
+
+    RoundNeedsToEnd.WIN -> {
+        when (opponent) {
+            RockPaperScissors.ROCK -> RockPaperScissors.PAPER
+            RockPaperScissors.PAPER -> RockPaperScissors.SCISSORS
+            RockPaperScissors.SCISSORS -> RockPaperScissors.ROCK
+        }
+    }
+
+    RoundNeedsToEnd.DRAW -> opponent
 }
 
 fun String.toRockPaperScissors(): RockPaperScissors = when (this) {
@@ -49,8 +94,19 @@ fun String.toRockPaperScissors(): RockPaperScissors = when (this) {
     else -> error("String $this can't be converted to RockPaperScissors")
 }
 
+fun String.toRoundNeedsToEnd(): RoundNeedsToEnd = when (this) {
+    "X" -> RoundNeedsToEnd.LOSE
+    "Y" -> RoundNeedsToEnd.DRAW
+    "Z" -> RoundNeedsToEnd.WIN
+    else -> error("String $this can't be converted to RoundNeedsToEnd")
+}
+
 enum class RockPaperScissors {
     ROCK, PAPER, SCISSORS
+}
+
+enum class RoundNeedsToEnd {
+    LOSE, WIN, DRAW
 }
 
 private fun RockPaperScissors.toSelectionScore(): Int = when (this) {
@@ -59,18 +115,29 @@ private fun RockPaperScissors.toSelectionScore(): Int = when (this) {
     RockPaperScissors.SCISSORS -> 3
 }
 
-private fun RockPaperScissors.vs(other: RockPaperScissors): Int {
-    return when {
-        this == RockPaperScissors.ROCK && other == RockPaperScissors.ROCK -> 3
-        this == RockPaperScissors.ROCK && other == RockPaperScissors.PAPER -> 0
-        this == RockPaperScissors.ROCK && other == RockPaperScissors.SCISSORS -> 6
-        this == RockPaperScissors.PAPER && other == RockPaperScissors.ROCK -> 6
-        this == RockPaperScissors.PAPER && other == RockPaperScissors.PAPER -> 3
-        this == RockPaperScissors.PAPER && other == RockPaperScissors.SCISSORS -> 0
-        this == RockPaperScissors.SCISSORS && other == RockPaperScissors.ROCK -> 0
-        this == RockPaperScissors.SCISSORS && other == RockPaperScissors.PAPER -> 6
-        this == RockPaperScissors.SCISSORS && other == RockPaperScissors.SCISSORS -> 3
-        else -> error("Invalid combination $this and $other")
+private fun RockPaperScissors.vs(opponent: RockPaperScissors): Int = when (this) {
+    RockPaperScissors.ROCK -> {
+        when (opponent) {
+            RockPaperScissors.ROCK -> 3
+            RockPaperScissors.PAPER -> 0
+            RockPaperScissors.SCISSORS -> 6
+        }
+    }
+
+    RockPaperScissors.PAPER -> {
+        when (opponent) {
+            RockPaperScissors.ROCK -> 6
+            RockPaperScissors.PAPER -> 3
+            RockPaperScissors.SCISSORS -> 0
+        }
+    }
+
+    RockPaperScissors.SCISSORS -> {
+        when (opponent) {
+            RockPaperScissors.ROCK -> 0
+            RockPaperScissors.PAPER -> 6
+            RockPaperScissors.SCISSORS -> 3
+        }
     }
 }
 
