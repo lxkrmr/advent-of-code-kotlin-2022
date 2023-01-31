@@ -36,8 +36,8 @@ fun main() {
                     player = player.toSelectionScore()
                 )
                 val scoreForOutcomeOfTheRound = Score(
-                    opponent = opponent.vs(player),
-                    player = player.vs(opponent)
+                    opponent = opponent vs player,
+                    player = player vs opponent
                 )
                 scoreForSelection + scoreForOutcomeOfTheRound
             }
@@ -115,7 +115,7 @@ private fun RockPaperScissors.toSelectionScore(): Int = when (this) {
     RockPaperScissors.SCISSORS -> 3
 }
 
-private fun RockPaperScissors.vs(opponent: RockPaperScissors): Int = when (this) {
+private infix fun RockPaperScissors.vs(opponent: RockPaperScissors): Int = when (this) {
     RockPaperScissors.ROCK -> {
         when (opponent) {
             RockPaperScissors.ROCK -> 3
