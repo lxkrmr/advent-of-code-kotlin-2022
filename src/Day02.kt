@@ -87,25 +87,25 @@ private fun RoundNeedsToEnd.pickRockPaperScissors(opponent: RockPaperScissors): 
     RoundNeedsToEnd.DRAW -> opponent
 }
 
-fun String.toRockPaperScissors(): RockPaperScissors = when (this) {
+private fun String.toRockPaperScissors(): RockPaperScissors = when (this) {
     "A", "X" -> RockPaperScissors.ROCK
     "B", "Y" -> RockPaperScissors.PAPER
     "C", "Z" -> RockPaperScissors.SCISSORS
     else -> error("String $this can't be converted to RockPaperScissors")
 }
 
-fun String.toRoundNeedsToEnd(): RoundNeedsToEnd = when (this) {
+private  fun String.toRoundNeedsToEnd(): RoundNeedsToEnd = when (this) {
     "X" -> RoundNeedsToEnd.LOSE
     "Y" -> RoundNeedsToEnd.DRAW
     "Z" -> RoundNeedsToEnd.WIN
     else -> error("String $this can't be converted to RoundNeedsToEnd")
 }
 
-enum class RockPaperScissors {
+private  enum class RockPaperScissors {
     ROCK, PAPER, SCISSORS
 }
 
-enum class RoundNeedsToEnd {
+private  enum class RoundNeedsToEnd {
     LOSE, WIN, DRAW
 }
 
@@ -141,7 +141,7 @@ private infix fun RockPaperScissors.vs(opponent: RockPaperScissors): Int = when 
     }
 }
 
-data class Score(val opponent: Int, val player: Int) {
+private data class Score(val opponent: Int, val player: Int) {
     operator fun plus(other: Score): Score {
         return Score(
             opponent = this.opponent + other.opponent,
